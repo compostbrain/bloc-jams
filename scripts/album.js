@@ -1,4 +1,4 @@
-var albumPicasso ={
+var albumPicasso = {
      title: 'The Colors',
      artist: 'Pablo Picasso',
      label: 'Cubism',
@@ -29,6 +29,20 @@ var albumMarconi = {
      ]
  };
 
+var albumBubblehead = {
+     title: 'Bubbles',
+     artist: 'Bubblebrain',
+     label: 'BUR',
+     year: '2020',
+     albumArtUrl: 'assets/images/album_covers/21.png',
+     songs: [
+         { title: 'bubble1?', duration: '41:01' },
+         { title: 'bubble2', duration: '5:01' },
+         { title: 'bubbles42', duration: '13:21'},
+         { title: 'C', duration: '3:14' },
+         { title: 'Wbubble', duration: '2:01:15'}
+     ]
+ };
  var createSongRow = function(songNumber, songName, songLength) {
      var template =
         '<tr class="album-view-song-item">'
@@ -41,14 +55,15 @@ var albumMarconi = {
      return template;
  };
 
-var setCurrentAlbum = function(album) {
-     // #1
-     var albumTitle = document.getElementsByClassName('album-view-title')[0];
+var albumTitle = document.getElementsByClassName('album-view-title')[0];
      var albumArtist = document.getElementsByClassName('album-view-artist')[0];
      var albumReleaseInfo = document.getElementsByClassName('album-view-release-info')[0];
      var albumImage = document.getElementsByClassName('album-cover-art')[0];
      var albumSongList = document.getElementsByClassName('album-view-song-list')[0];
  
+var setCurrentAlbum = function(album) {
+     // #1
+     
      // #2
      albumTitle.firstChild.nodeValue = album.title;
      albumArtist.firstChild.nodeValue = album.artist;
@@ -67,3 +82,12 @@ var setCurrentAlbum = function(album) {
  window.onload = function() {
      setCurrentAlbum(albumPicasso);
  };
+var albums = [albumPicasso, albumMarconi, albumBubblehead];
+var i = 1;
+
+albumImage.addEventListener("click", function(event) {      setCurrentAlbum(albums[i]);
+    i++;
+if (i == albums.length) {
+    i = 0;
+}
+                            });
