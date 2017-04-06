@@ -43,7 +43,7 @@ var createSongRow = function (songNumber, songName, songLength) {
             // Revert to song number for currently playing song because user started playing new song.
             var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
             currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
-            $(currentlyPlayingCell).html(currentlyPlayingSongNumber);
+            currentlyPlayingCell.html(currentlyPlayingSongNumber);
         }
         if (currentlyPlayingSongNumber !== songNumber) {
             // Switch from Play -> Pause button to indicate new song is playing.
@@ -70,7 +70,7 @@ var createSongRow = function (songNumber, songName, songLength) {
 
     var onHover = function (event) {
         var songNumberCell = $(this).find('.song-item-number');
-        var songNumber = parseInt($(this).attr('data-song-number'));
+        var songNumber = parseInt(songNumberCell.attr('data-song-number'));
 
 
         if (songNumber !== currentlyPlayingSongNumber) {
@@ -80,7 +80,7 @@ var createSongRow = function (songNumber, songName, songLength) {
 
     var offHover = function (event) {
         var songNumberCell = $(this).find('.song-item-number');
-        var songNumber = parseInt($(this).attr('data-song-number'));
+        var songNumber = parseInt(songNumberCell.attr('data-song-number'));
 
 
         if (songNumber !== currentlyPlayingSongNumber) {
