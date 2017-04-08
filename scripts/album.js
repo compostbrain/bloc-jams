@@ -26,7 +26,18 @@ var setVolume = function (volume) {
         currentSoundFile.setVolume(volume);
     }
 };
-
+/*
+Write a function called filterTimeCode that takes one argument, timeInSeconds. It should:
+Use the parseFloat() method to get the seconds in number form.
+Store variables for whole seconds and whole minutes (hint: use Math.floor() to round numbers down).
+Return the time in the format X:XX
+*/
+const filterTimeCode = (timeInSeconds) => {
+    let seconds = parseFloat(timeInSeconds);
+    let mn = Math.floor(seconds % 3600 / 60);
+    let sc = Math.floor(seconds % 60);
+    return(mn +":"+ sc);
+};
 var getSongNumberCell = function (number) {
     return ('.song-item-number[data-song-number="' + number + '"]');
 };
@@ -43,16 +54,16 @@ var createSongRow = function (songNumber, songName, songLength) {
 
     var clickHandler = function () {
         var $volumeFill = $('.volume .fill');
-            var $volumeThumb = $('.volume .thumb');
-            $volumeFill.width(currentVolume + '%');
-            $volumeThumb.css({
-                left: currentVolume + '%'
-            });
-        
+        var $volumeThumb = $('.volume .thumb');
+        $volumeFill.width(currentVolume + '%');
+        $volumeThumb.css({
+            left: currentVolume + '%'
+        });
+
 
         var songNumber = parseInt($(this).attr('data-song-number'));
         //Update clickHandler() to set the CSS of the volume seek bar to equal the currentVolume.
-        
+
         if (currentlyPlayingSongNumber !== null) {
             // Revert to song number for currently playing song because user started playing new song.
             var currentlyPlayingCell = getSongNumberCell(currentlyPlayingSongNumber);
@@ -67,7 +78,7 @@ var createSongRow = function (songNumber, songName, songLength) {
 
             $(this).html(pauseButtonTemplate);
             updateSeekBarWhileSongPlays();
-             
+
             currentSongFromAlbum = currentAlbum.songs[songNumber - 1];
             updatePlayerBarSong();
         } else if (currentlyPlayingSongNumber === songNumber) {
@@ -130,11 +141,18 @@ var setCurrentAlbum = function (album) {
     $albumSongList.empty();
 
     for (var i = 0; i < album.songs.length; i++) {
-        var $newRow = createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
+        var $newRow = createSongRow(i + 1, album.songs[i].title, filterTimeCode(album.songs[i].duration));
         $albumSongList.append($newRow);
     }
 };
 
+/*
+Write a function called setCurrentTimeInPlayerBar() that takes one argument, currentTime, that sets the text of the element with the .current-time class to the current time in the song.
+Add the method to updateSeekBarWhileSongPlays() so the current time updates with song playback.
+*/
+const setCurrentTimeInPlayerBar = (currentTime) => {
+    $('.current-time').html(currentTime);
+};
 var updateSeekBarWhileSongPlays = function () {
     if (currentSoundFile) {
         // #10
@@ -144,6 +162,7 @@ var updateSeekBarWhileSongPlays = function () {
             var $seekBar = $('.seek-control .seek-bar');
 
             updateSeekPercentage($seekBar, seekBarFillRatio);
+            setCurrentTimeInPlayerBar(filterTimeCode(currentSoundFile.getTime()));
         });
     }
 };
@@ -276,16 +295,15 @@ var togglePlayFromPlayerBar = function () { //Write a function so that users can
         $currentSongNumberCell.html(pauseButtonTemplate);
         currentSoundFile.play();
 
-    } 
-    else if (currentSoundFile.isPaused()) {
-                $(this).html(pauseButtonTemplate);
-                $playPause.html(playerBarPauseButton);
-                currentSoundFile.play();
-            } else {
-                $(this).html(playButtonTemplate);
-                $playPause.html(playerBarPlayButton);
-                currentSoundFile.pause();
-            }
+    } else if (currentSoundFile.isPaused()) {
+        $(this).html(pauseButtonTemplate);
+        $playPause.html(playerBarPauseButton);
+        currentSoundFile.play();
+    } else {
+        $(this).html(playButtonTemplate);
+        $playPause.html(playerBarPlayButton);
+        currentSoundFile.pause();
+    }
     //If the song is playing (so a current sound file exist), and the pause button is clicked
     //Change the song number cell from a pause button to a play button
     //hange the HTML of the player bar's pause button to a play button
@@ -293,14 +311,21 @@ var togglePlayFromPlayerBar = function () { //Write a function so that users can
 
 
 };
+/*
+Write a function called setTotalTimeInPlayerBar() that takes one argument, totalTime, that sets the text of the element with the .total-time class to the length of the song.
+Add the method to updatePlayerBarSong() so the total time is set when a song first plays.
+*/
+const setTotalTimeInPlayerBar = (totalTime) => {
+    $('.total-time').html(totalTime);
+};
 var updatePlayerBarSong = function () {
 
     $('.currently-playing .song-name').text(currentSongFromAlbum.title);
     $('.currently-playing .artist-name').text(currentAlbum.artist);
     $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + " - " + currentAlbum.artist);
-    $('.main-controls .play-pause').html(playerBarPauseButton);
+    $playPause.html(playerBarPauseButton);
+    setTotalTimeInPlayerBar(filterTimeCode(currentSongFromAlbum.duration));
 };
-
 
 
 var playButtonTemplate = '<a class="album-song-button"><span class="ion-play"></span></a>';
